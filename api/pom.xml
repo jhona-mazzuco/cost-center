@@ -17,7 +17,7 @@
     <properties>
         <java.version>14</java.version>
         <jac4e.version>0.0.2</jac4e.version>
-        <bean-validator.version>6.0.2.Final</bean-validator.version>
+        <bean-validator.version>6.1.5.Final</bean-validator.version>
         <guava.version>29.0-jre</guava.version>
     </properties>
 
