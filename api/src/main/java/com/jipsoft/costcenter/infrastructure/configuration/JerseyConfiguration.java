@@ -16,7 +16,6 @@ public class JerseyConfiguration extends ResourceConfig {
 
     @PostConstruct
     public void init() {
-        Class[] clazzList = null;
         try {
             ClassPath.from(getClassLoader()).getAllClasses()
                     .stream()

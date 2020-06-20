@@ -18,19 +18,15 @@ public class CityController extends BaseController {
     @Autowired
     private CityRepository repository;
 
-    @Autowired
-    private CityService service;
-
     @GET
     public Response findAll() {
-        var x = repository.findAll().spliterator();
-        return Response.ok( x ).build();
+        return Response.ok(repository.findAll()).build();
     }
 
     @GET
     @Path("/{id}")
     public Response findById(@PathParam("id") Long id) {
-        return Response.ok( service.findById(id) ).build();
+        return Response.ok(repository.findById(id).get()).build();
     }
 
 //    @GET
@@ -43,7 +39,7 @@ public class CityController extends BaseController {
     @GET
     @Path("/state")
     public Response findByState() {
-        return Response.ok( City.State.values() ).build();
+        return Response.ok(City.State.values()).build();
     }
 
 }

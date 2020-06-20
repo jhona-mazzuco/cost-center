@@ -3,6 +3,7 @@ package com.jipsoft.costcenter.model.entity;
 import com.github.microtweak.jac4e.core.EnumAttributeConverter;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -19,8 +20,10 @@ public class City implements Serializable {
     @Column(name = "city_id")
     private Long id;
 
+    @Setter
     private String name;
 
+    @Setter
     private State state;
 
     @AllArgsConstructor
@@ -54,13 +57,13 @@ public class City implements Serializable {
         GO(52,"Goiás"),
         DF(53,"Distrito Federal");
 
-        private int code;
+        private int value;
 
         private String name;
 
         public static State findByCode(int code) {
             for (State state : State.values()) {
-                if (code == state.code) {
+                if (code == state.value) {
                     return state;
                 }
             }
