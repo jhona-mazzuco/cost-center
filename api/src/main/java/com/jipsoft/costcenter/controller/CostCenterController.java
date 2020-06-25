@@ -1,20 +1,26 @@
 package com.jipsoft.costcenter.controller;
 
-import com.jipsoft.costcenter.model.entity.Cost;
 import com.jipsoft.costcenter.model.entity.CostCenter;
 import com.jipsoft.costcenter.model.repository.CityRepository;
 import com.jipsoft.costcenter.model.repository.CostCenterRepository;
+import com.jipsoft.costcenter.model.repository.CostRepository;
 import com.jipsoft.costcenter.view.CostCenterDto;
-import com.jipsoft.costcenter.view.CostDto;
+import com.jipsoft.costcenter.view.DashboardDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
 
+import java.math.BigDecimal;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import static org.apache.commons.lang3.ObjectUtils.isNotEmpty;
+
 @Controller
 @Path("/cost-center")
-public class CostCenterController extends BaseController {
+public class CostCenterController extends BaseController<CostCenterRepository> {
 
     @Autowired
     private CostCenterRepository repository;
@@ -22,44 +28,68 @@ public class CostCenterController extends BaseController {
     @Autowired
     private CityRepository cityRepository;
 
+    @Autowired
+    private CostRepository costRepository;
+
     @GET
     public Response findAll() {
-        return Response.ok( repository.findAll() ).build();
+        return ok( repository.findAll() );
     }
 
     @GET
     @Path("/{id}")
     public Response findById(@PathParam("id") Long id) {
-        return Response.ok( repository.findById(id).orElseThrow() ).build();
+        return ok( repository.findById(id).orElseThrow() );
     }
 
     @POST
     public Response save(CostCenterDto dto) {
-        var city = cityRepository.findById(dto.getCity());
-        var entity = new CostCenter();
-        return Response.ok( repository.save(entity) ).build();
+        var city = cityRepository.findById(dto.getCity()).orElseThrow();
+        return ok( repository.save(new CostCenter(dto.getName(), city)) );
     }
 
     @PUT
     @Path("/{id}")
     public Response update(@PathParam("id") Long id, CostCenterDto dto) {
-        var city = cityRepository.findById(dto.getCity()).get();
         var entity = repository.findById(id).get();
-        entity.setName(dto.getName());
-        entity.setState(dto.getState());
-        entity.setCity(city);
-        return Response.ok( repository.save(entity) ).build();
+
+        if (isNotEmpty(dto.getName())) {
+            entity.setName(dto.getName());
+        }
+
+        if (isNotEmpty(dto.getCity())) {
+            var city = cityRepository.findById(dto.getCity()).get();
+            entity.setCity(city);
+        }
+
+        return ok( repository.save(entity) );
     }
 
-    @POST
-    @Path("/{id}/cost")
-    public Response newCost(@PathParam("id") Long id, CostDto dto) {
-        var entity = repository.findById(id).orElseThrow();
+    @DELETE
+    @Path("{id}")
+    public Response remove(@PathParam("id") Long id) {
+        repository.deleteById(id);
+        return ok();
+    }
 
-        var cost = new Cost(dto.getName(), dto.getCostCenter(), dto.getValue(), dto.getDescription());
+    @GET
+    @Path("{id}/costs")
+    public Response getCosts(@PathParam("id") Long id) {
+        var costCenter = repository.findById(id).orElseThrow();
+        return ok( costRepository.findByCostCenter(costCenter) );
+    }
 
-        entity.getCosts().add(cost);
-
-        return Response.ok( repository.save(entity) ).build();
+    @GET
+    @Path("dashboard")
+    public Response dashboard() {
+        var centers = repository.findAll();
+        List<DashboardDto> list = centers.stream().map(center -> {
+            var costs = costRepository.findByCostCenter(center);
+            return new DashboardDto(
+                    center.getName(),
+                    costs.stream().map(c -> c.getValue()).reduce(BigDecimal.ZERO, BigDecimal::add)
+            );
+        }).collect(Collectors.toList());
+        return ok(list);
     }
 }

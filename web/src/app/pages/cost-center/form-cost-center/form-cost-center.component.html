@@ -1,0 +1,21 @@
+<div class="ui-fluid">
+    <div class="p-field">
+        <label for="name">Nome</label>
+        <input class="ui-inputtext" id="name" [(ngModel)]="entity.name">
+    </div>
+
+    <br/>
+
+    <div class="p-field">
+        <label for="city">Cidade</label>
+        <p-autoComplete id="city" [(ngModel)]="entity.city" [suggestions]="suggestions" (completeMethod)="search($event)"
+                        field="name" [size]="30" [minLength]="1">
+        </p-autoComplete>
+    </div>
+
+    <br/>
+
+    <div style="direction: rtl">
+        <p-button styleClass="ui-button-success" label="Salvar" icon="pi pi-check" (click)="save()"></p-button>
+    </div>
+</div>

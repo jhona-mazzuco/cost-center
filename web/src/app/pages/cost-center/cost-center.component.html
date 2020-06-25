@@ -1,0 +1,147 @@
+<p-toast></p-toast>
+<div class="pb-1">
+    <p-panel header="Centro de Custo" [toggleable]="true">
+        <div class="p-grid">
+            <div class="p-col">
+                <p-button styleClass="ui-button-success" icon="pi pi-plus" label="Adicionar"
+                          (click)="openFormCostCenter()"></p-button>
+                &nbsp;
+                <p-button styleClass="ui-button-danger" icon="pi pi-trash" label="Excluir"
+                          (click)="removeCostCenter()"></p-button>
+            </div>
+        </div>
+
+        <p-table [value]="costCenters" resizableColumns="true" (onRowSelect)="onRowSelect($event)"
+                 selectionMode="single">
+            <ng-template pTemplate="header">
+                <tr>
+                    <th width="10%">Código</th>
+                    <th>Nome</th>
+                    <th>Cidade</th>
+                </tr>
+            </ng-template>
+
+            <ng-template pTemplate="body" let-row>
+                <tr [pSelectableRow]="row">
+                    <td>
+                        <div class="text-center">
+                            {{ row.id }}
+                        </div>
+                    </td>
+                    <td>{{ row.name }}</td>
+                    <td>{{ row.city.name }}</td>
+                </tr>
+            </ng-template>
+
+            <ng-template pTemplate="emptymessage">
+                <tr>
+                    <td colspan="3">
+                        <div class="text-center">
+                            <i class="pi pi-exclamation-triangle"></i>
+                            Não há Centros cadastrados no momento!
+                        </div>
+                    </td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </p-panel>
+</div>
+
+<p-panel header="Custo" *ngIf="costs">
+    <div class="p-grid">
+        <div class="p-col">
+            <p-button styleClass="ui-button-success" icon="pi pi-plus" label="Adicionar"
+                      (click)="openFormCost()"></p-button>
+        </div>
+    </div>
+
+    <p-table [value]="costs" dataKey="id">
+        <ng-template pTemplate="header">
+            <tr>
+                <th width="5%"></th>
+                <th width="10%">Código</th>
+                <th width="10%">Criado em</th>
+                <th>Nome</th>
+                <th>Valor</th>
+            </tr>
+        </ng-template>
+
+        <ng-template pTemplate="body" let-expanded="expanded" let-row>
+            <tr>
+                <td>
+                    <a [pRowToggler]="row">
+                        <i [ngClass]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></i>
+                    </a>
+
+                    &nbsp;
+
+                    <a class="text-red text-md" (click)="removeCost(row)">
+                        <i class="pi pi-trash"></i>
+                    </a>
+                </td>
+                <td>
+                    <div class="text-center">
+                        {{ row.id }}
+                    </div>
+                </td>
+                <td>
+                    <div class="text-center">
+                        {{ row.createdAt | date: 'dd/MM/yyyy' }}
+                    </div>
+                <td pEditableColumn>
+                    <p-cellEditor>
+                        <ng-template pTemplate="input">
+                            <input class="ui-inputtext" id="name" [(ngModel)]="row.name"
+                                   (keydown.enter)="onRowEditSave(row)">
+                        </ng-template>
+
+                        <ng-template pTemplate="output">
+                            {{ row.name }}
+                        </ng-template>
+                    </p-cellEditor>
+                </td>
+                <td pEditableColumn>
+                    <p-cellEditor>
+                        <ng-template pTemplate="input">
+                            <input id="value" type="number" class="ui-inputtext" [(ngModel)]="row.value"
+                                   (keydown.enter)="onRowEditSave(row)"/>
+                        </ng-template>
+
+                        <ng-template pTemplate="output">
+                            {{ row.value }}
+                        </ng-template>
+                    </p-cellEditor>
+                </td>
+            </tr>
+        </ng-template>
+
+        <ng-template pTemplate="rowexpansion" let-row>
+            <tr>
+                <td pEditableColumn colspan="5">
+                    <p-cellEditor>
+                        <ng-template pTemplate="input">
+                            <textarea id="description" class="ui-inputtextarea" [(ngModel)]="row.description" rows="5"
+                                      (keydown.enter)="onRowEditSave(row)"></textarea>
+                        </ng-template>
+
+                        <ng-template pTemplate="output">
+                            {{ row.description }}
+                        </ng-template>
+                    </p-cellEditor>
+                </td>
+            </tr>
+        </ng-template>
+
+        <ng-template pTemplate="emptymessage">
+            <tr>
+                <td colspan="5">
+                    <div class="text-center">
+                        <i class="pi pi-exclamation-triangle"></i>
+                        Não há Custos cadastrados no momento!
+                    </div>
+                </td>
+            </tr>
+        </ng-template>
+    </p-table>
+</p-panel>
+

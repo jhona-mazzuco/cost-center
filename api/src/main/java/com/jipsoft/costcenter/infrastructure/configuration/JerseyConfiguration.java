@@ -26,6 +26,7 @@ public class JerseyConfiguration extends ResourceConfig {
             e.printStackTrace();
         }
 
+        register(CorsConfiguration.class);
         register(GenericExceptionMapper.class);
     }
 

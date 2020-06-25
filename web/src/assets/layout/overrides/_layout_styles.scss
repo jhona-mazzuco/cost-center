@@ -1,0 +1,41 @@
+/* Add your customizations of layout here */
+.topbar {
+  margin-bottom: 10px !important;
+}
+
+.ui-menubar {
+  background-color: transparent !important;
+  border: 0 !important;
+
+  .ui-menuitem-text {
+    color: #eeeeee !important;
+  }
+
+  .ui-menuitem-icon {
+    color: #eeeeee !important;
+  }
+
+  .ui-menuitem-link:hover {
+    background-color: transparent !important;
+  }
+
+  .ui-menuitem-link:focus {
+    background-color: transparent !important;
+  }
+}
+
+.ui-menubar:hover {
+  background-color: transparent !important;
+}
+
+.main {
+  margin: 0 !important;
+  padding: 5px 10px 5px 10px !important;
+}
+
+.ui-panel {
+  .ui-panel-titlebar {
+    background-color: #000000 !important;
+    color: #eeeeee !important;
+  }
+}

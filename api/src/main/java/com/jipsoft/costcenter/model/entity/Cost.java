@@ -1,5 +1,6 @@
 package com.jipsoft.costcenter.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -11,6 +12,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @NoArgsConstructor
+@SequenceGenerator(name = "seq_cost", sequenceName = "seq_cost", allocationSize = 1)
 @Getter
 @Entity
 @Table
@@ -18,19 +20,19 @@ public class Cost implements Serializable {
 
     @Id
     @Column(name = "cost_id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_cost")
     private Long id;
+
+    @Setter
+    @ManyToOne
+    @JsonBackReference
+    @JoinColumn(name = "cost_center_id", nullable = false)
+    private CostCenter costCenter;
 
     @Setter
     private String name;
 
-    @Setter
     private LocalDateTime createdAt;
-
-    @Setter
-    @ManyToOne
-    @JoinColumn(name = "cost_center_id")
-    private CostCenter costCenter;
 
     @Setter
     @Digits(integer = 16, fraction = 2)
