@@ -84,6 +84,7 @@ export class CostCenterComponent implements OnInit {
 
     onRowEditSave(row: any) {
         this.costService.update(row)
+            .then(() => this.messageService.add({severity: 'success', summary: 'Sucesso', detail:'Campo salvo com sucesso!'}))
             .catch(({ error }) => this.showErrorMessage(error));
     }
 

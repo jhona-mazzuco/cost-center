@@ -10,6 +10,6 @@ import java.util.List;
 @Repository
 public interface CostRepository extends JpaRepository<Cost, Long> {
 
-    List<Cost> findByCostCenter(CostCenter costCenter);
+    List<Cost> findByCostCenterOrderById(CostCenter costCenter);
 
 }

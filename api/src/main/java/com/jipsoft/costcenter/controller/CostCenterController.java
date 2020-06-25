@@ -7,6 +7,7 @@ import com.jipsoft.costcenter.model.repository.CostRepository;
 import com.jipsoft.costcenter.view.CostCenterDto;
 import com.jipsoft.costcenter.view.DashboardDto;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 
 import javax.ws.rs.*;
@@ -33,7 +34,7 @@ public class CostCenterController extends BaseController<CostCenterRepository> {
 
     @GET
     public Response findAll() {
-        return ok( repository.findAll() );
+        return ok( repository.findAll( Sort.by("id")) );
     }
 
     @GET
@@ -76,7 +77,7 @@ public class CostCenterController extends BaseController<CostCenterRepository> {
     @Path("{id}/costs")
     public Response getCosts(@PathParam("id") Long id) {
         var costCenter = repository.findById(id).orElseThrow();
-        return ok( costRepository.findByCostCenter(costCenter) );
+        return ok( costRepository.findByCostCenterOrderById(costCenter) );
     }
 
     @GET
@@ -84,7 +85,7 @@ public class CostCenterController extends BaseController<CostCenterRepository> {
     public Response dashboard() {
         var centers = repository.findAll();
         List<DashboardDto> list = centers.stream().map(center -> {
-            var costs = costRepository.findByCostCenter(center);
+            var costs = costRepository.findByCostCenterOrderById(center);
             return new DashboardDto(
                     center.getName(),
                     costs.stream().map(c -> c.getValue()).reduce(BigDecimal.ZERO, BigDecimal::add)
